@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Biblioteca de PDFs</title>
+  <meta name="description" content="Biblioteca online de FDS e FISPQ">
+  <style>
+    :root { --gap: 1rem; --radius: 16px; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height:1.5; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 1.5rem; }
+    h1 { margin: 0 0 .5rem 0; }
+    h2 { margin: 2rem 0 .5rem 0; }
+    #search { width:100%; padding:.75rem 1rem; border:1px solid #ddd; border-radius: var(--radius); font-size:1rem; }
+    .grid { list-style:none; padding:0; margin: var(--gap) 0 0 0; display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--gap); }
+    .card a { display:block; padding:1rem; border:1px solid #eee; border-radius: var(--radius); text-decoration:none; color:inherit; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.03); }
+    .card a:hover { border-color:#ddd; box-shadow:0 3px 12px rgba(0,0,0,.06); }
+    .title { display:block; font-weight:600; margin-bottom:.25rem; }
+    .meta { display:block; font-size:.9rem; color:#666; }
+    footer { border-top:1px solid #eee; margin-top:2rem; }
+    @media (prefers-color-scheme: dark){
+      body{background:#0b0b0b; color:#eaeaea;}
+      #search{background:#161616; border-color:#333; color:#eaeaea;}
+      .card a{background:#121212; border-color:#222;}
+      .card a:hover{border-color:#2d2d2d; box-shadow:0 3px 14px rgba(0,0,0,.35);}
+      footer{border-color:#1f1f1f;}
+    }
+  </style>
+</head>
+<body>
+  <header class="container">
+    <h1>📚 Biblioteca de PDFs</h1>
+    <p>Pesquise por nome do produto ou palavra-chave e clique para abrir o PDF.</p>
+    <input id="search" type="search" placeholder="Pesquisar… (ex.: WD-40, Molykote, Loctite)">
+  </header>
+
+  <main class="container" id="results">
+
+    <!-- ===== FDS ===== -->
+    <section class="category">
+      <h2>FDS</h2>
+      <ul class="grid">
+        <li class="card"><a href="FDS LC 150-Limpa-Contatos-Aerojet.pdf" target="_blank" rel="noopener">
+          <span class="title">LC 150 – Limpa-Contatos (Aerojet)</span><span class="meta">FDS</span></a></li>
+
+        <li class="card"><a href="FDS LOCTITE 271.pdf" target="_blank" rel="noopener">
+          <span class="title">Loctite 271</span><span class="meta">FDS</span></a></li>
+
+        <li class="card"><a href="FDS LOCTITTE-242.pdf" target="_blank" rel="noopener">
+          <span class="title">Loctitte 242</span><span class="meta">FDS</span></a></li>
+
+        <li class="card"><a href="FDS MOLYKOTE 55.pdf" target="_blank" rel="noopener">
+          <span class="title">Molykote 55</span><span class="meta">FDS</span></a></li>
+
+        <li class="card"><a href="FDS ALCOOL ISOPROPILICO.pdf" target="_blank" rel="noopener">
+          <span class="title">Álcool Isopropílico</span><span class="meta">FDS</span></a></li>
+
+        <li class="card"><a href="FDS MOLYKOTE 111.pdf" target="_blank" rel="noopener">
+          <span class="title">Molykote 111</span><span class="meta">FDS</span></a></li>
+
+        <li class="card"><a href="FDS SILICONE AEROSOL.pdf" target="_blank" rel="noopener">
+          <span class="title">Silicone Aerosol</span><span class="meta">FDS</span></a></li>
+
+        <li class="card"><a href="FDS TUBOLIT.pdf" target="_blank" rel="noopener">
+          <span class="title">Tubolit</span><span class="meta">FDS</span></a></li>
+
+        <li class="card"><a href="FDS Vaselina Liquida.pdf" target="_blank" rel="noopener">
+          <span class="title">Vaselina Líquida</span><span class="meta">FDS</span></a></li>
+
+        <li class="card"><a href="FDS VASELINA SOLIDA.pdf" target="_blank" rel="noopener">
+          <span class="title">Vaselina Sólida</span><span class="meta">FDS</span></a></li>
+
+        <li class="card"><a href="FDS VEDA JUNTA.pdf" target="_blank" rel="noopener">
+          <span class="title">Veda Junta</span><span class="meta">FDS</span></a></li>
+
+        <li class="card"><a href="FDS VEJA VIDREX.pdf" target="_blank" rel="noopener">
+          <span class="title">Veja Vidrex</span><span class="meta">FDS</span></a></li>
+
+        <li class="card"><a href="FDS WD 40 AEROSOL.pdf" target="_blank" rel="noopener">
+          <span class="title">WD-40 (Aerosol)</span><span class="meta">FDS</span></a></li>
+
+        <li class="card"><a href="FDS WD-40 LIQUIDO.pdf" target="_blank" rel="noopener">
+          <span class="title">WD-40 (Líquido)</span><span class="meta">FDS</span></a></li>
+      </ul>
+    </section>
+
+    <!-- ===== FISPQ ===== -->
+    <section class="category">
+      <h2>FISPQ</h2>
+      <ul class="grid">
+        <li class="card"><a href="FISPQ LOCTITE 565.pdf" target="_blank" rel="noopener">
+          <span class="title">Loctite 565</span><span class="meta">FISPQ</span></a></li>
+
+        <li class="card"><a href="FISPQ MAKEY.pdf" target="_blank" rel="noopener">
+          <span class="title">Makey</span><span class="meta">FISPQ</span></a></li>
+
+        <li class="card"><a href="FISPQ SILICONE TEK BOND.pdf" target="_blank" rel="noopener">
+          <span class="title">Silicone Tek Bond</span><span class="meta">FISPQ</span></a></li>
+
+        <li class="card"><a href="FISPQ VEJA MULTIUSO.pdf" target="_blank" rel="noopener">
+          <span class="title">Veja Multiuso</span><span class="meta">FISPQ</span></a></li>
+
+        <li class="card"><a href="FISPQ_QUIMATIC_1.pdf" target="_blank" rel="noopener">
+          <span class="title">Quimatic 1</span><span class="meta">FISPQ</span></a></li>
+
+        <li class="card"><a href="FISPQ_QUIMATIC_2.pdf" target="_blank" rel="noopener">
+          <span class="title">Quimatic 2</span><span class="meta">FISPQ</span></a></li>
+
+        <li class="card"><a href="FISPQ_SUPER_FLUIDO_3.pdf" target="_blank" rel="noopener">
+          <span class="title">Super Fluido 3</span><span class="meta">FISPQ</span></a></li>
+
+        <!-- Observação: estes dois vieram sem espaço após "FISPQ" no nome;
+             mantive exatamente como você enviou para o link funcionar. -->
+        <li class="card"><a href="FISPQLOCTITE 290.pdf" target="_blank" rel="noopener">
+          <span class="title">Loctite 290</span><span class="meta">FISPQ</span></a></li>
+
+        <li class="card"><a href="FISPQLOCTITE 290.pdf" target="_blank" rel="noopener">
+          <span class="title">Loctite 290 (duplicado)</span><span class="meta">FISPQ</span></a></li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="container" style="font-size:.9rem;color:#666">
+    Última atualização: <span id="updated"></span>
+  </footer>
+
+  <script>
+    document.getElementById('updated').textContent = new Date().toLocaleDateString('pt-BR');
+    const search = document.getElementById('search');
+    const cards = Array.from(document.querySelectorAll('.card'));
+    search.addEventListener('input', () => {
+      const q = search.value.toLowerCase().trim();
+      cards.forEach(card => {
+        const t = card.textContent.toLowerCase();
+        card.style.display = t.includes(q) ? '' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>
