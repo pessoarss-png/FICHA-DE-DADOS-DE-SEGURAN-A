@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Biblioteca de Fichas de Segurança</title>
-  <meta name="description" content="FDS e FISPQ online">
+  <meta name="description" content="Lista automática de FDS e FISPQ a partir do repositório do GitHub">
   <style>
     :root { --gap:1rem; --radius:16px; }
     *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.5}
@@ -16,107 +16,120 @@
     .card a:hover{border-color:#ddd;box-shadow:0 3px 12px rgba(0,0,0,.06)}
     .title{display:block;font-weight:600;margin-bottom:.25rem}.meta{display:block;font-size:.9rem;color:#666}
     footer{border-top:1px solid #eee;margin-top:2rem}
+    .muted{color:#777;font-size:.95rem}
     @media (prefers-color-scheme: dark){
       body{background:#0b0b0b;color:#eaeaea}
       #search{background:#161616;border-color:#333;color:#eaeaea}
       .card a{background:#121212;border-color:#222}
       .card a:hover{border-color:#2d2d2d;box-shadow:0 3px 14px rgba(0,0,0,.35)}
       footer{border-color:#1f1f1f}
+      .muted{color:#a0a0a0}
     }
   </style>
 </head>
 <body>
   <header class="container">
     <h1>📚 Fichas de Dados de Segurança</h1>
-    <p>Pesquise e clique para abrir o PDF.</p>
+    <p class="muted">Os PDFs são listados automaticamente do repositório.</p>
     <input id="search" type="search" placeholder="Pesquisar… (ex.: WD-40, Molykote, Loctite)">
   </header>
 
   <main class="container">
-    <section class="category">
+    <section>
       <h2>FDS</h2>
       <ul id="lista-fds" class="grid"></ul>
     </section>
-    <section class="category">
+    <section>
       <h2>FISPQ</h2>
       <ul id="lista-fispq" class="grid"></ul>
     </section>
+    <p id="status" class="muted"></p>
   </main>
 
-  <footer class="container" style="font-size:.9rem;color:#666">
+  <footer class="container" style="font-size:.9rem">
     Última atualização: <span id="updated"></span>
   </footer>
 
   <script>
-    // LISTAS — exatamente como seus arquivos estão nomeados na RAIZ do repositório
-    const FDS = [
-      "FDS ALCOOL ISOPROPILICO.pdf",
-      "FDS LC 150-Limpa-Contatos-Aerojet.pdf",
-      "FDS LOCTITE 271.pdf",
-      "FDS LOCTITTE-242.pdf",
-      "FDS MOLYKOTE 111.pdf",
-      "FDS MOLYKOTE 55.pdf",
-      "FDS SILICONE AEROSOL.pdf",
-      "FDS TUBOLIT.pdf",
-      "FDS VASELINA SOLIDA.pdf",
-      "FDS Vaselina Liquida.pdf",
-      "FDS VEDA JUNTA.pdf",
-      "FDS VEJA VIDREX.pdf",
-      "FDS WD 40 AEROSOL.pdf",
-      "FDS WD-40 LIQUIDO.pdf"
-    ];
+    // ====== CONFIGURADO PARA SEU REPO ======
+    const USERNAME = "pessoarss-png";        
+    const REPO     = "FICHA-DE-DADOS-DE-SEGURAN-A";    
+    const BRANCH   = "main";               
+    const FOLDER   = "";                   
+    // ========================================
 
-    const FISPQ = [
-      "FISPQ LOCTITE 565.pdf",
-      "FISPQ MAKEY.pdf",
-      "FISPQ SILICONE TEK BOND.pdf",
-      "FISPQ VEJA MULTIUSO.pdf",
-      "FISPQ_QUIMATIC_1.pdf",
-      "FISPQ_QUIMATIC_2.pdf",
-      "FISPQ_SUPER_FLUIDO_3.pdf",
-      "FISPQLOCTITE 290.pdf"
-    ];
+    const statusEl = document.getElementById("status");
+    document.getElementById("updated").textContent = new Date().toLocaleDateString("pt-BR");
 
-    // util: remove duplicados mantendo a ordem
-    const dedup = arr => [...new Map(arr.map(x => [x.toLowerCase(), x])).values()];
+    const apiURL = `https://api.github.com/repos/${USERNAME}/${REPO}/contents/${FOLDER}?ref=${encodeURIComponent(BRANCH)}`;
 
-    function criaCard(nomeArquivo, prefixo) {
-      // como os PDFs estão na RAIZ, não há prefixo de pasta; só codificamos a URL
-      const href = encodeURIComponent(nomeArquivo);
-      // título legível (remove prefixos e extensão)
-      let title = nomeArquivo.replace(/\.pdf$/i,"");
-      title = title.replace(/^FDS\s*/i,"").replace(/^FISPQ\s*/i,"");
+    function pagesHref(name) {
+      const relBase = location.pathname.replace(/\/[^\/]*$/, "/");
+      const path = (FOLDER + name).split("/").map(encodeURIComponent).join("/");
+      return relBase + path;
+    }
+
+    function niceTitle(name) {
+      return name.replace(/\.pdf$/i, "")
+                 .replace(/^(FDS|FISPQ)\s*/i, "")
+                 .trim();
+    }
+
+    function cardLi(name) {
       const li = document.createElement("li");
       li.className = "card";
-      li.innerHTML = `<a href="${href}" target="_blank" rel="noopener">
-        <span class="title">${title}</span>
-        <span class="meta">PDF</span>
-      </a>`;
+      li.innerHTML = `
+        <a href="${pagesHref(name)}" target="_blank" rel="noopener">
+          <span class="title">${niceTitle(name)}</span>
+          <span class="meta">PDF</span>
+        </a>`;
       return li;
     }
 
-    function render(lista, ulId) {
-      const ul = document.getElementById(ulId);
-      dedup(lista).forEach(n => ul.appendChild(criaCard(n)));
+    async function load() {
+      try {
+        statusEl.textContent = "Carregando lista de arquivos…";
+        const resp = await fetch(apiURL, { headers: { "Accept": "application/vnd.github+json" } });
+        if (!resp.ok) throw new Error("Falha na API do GitHub (" + resp.status + ")");
+        const items = await resp.json();
+
+        const pdfs = items
+          .filter(x => x.type === "file" && /\.pdf$/i.test(x.name))
+          .map(x => x.name);
+
+        if (pdfs.length === 0) {
+          statusEl.textContent = "Nenhum PDF encontrado.";
+          return;
+        }
+
+        const fds   = pdfs.filter(n => /^FDS\b/i.test(n));
+        const fispq = pdfs.filter(n => /^FISPQ\b/i.test(n));
+
+        fds.sort((a,b)=>a.localeCompare(b, 'pt-BR', {sensitivity:'base'}));
+        fispq.sort((a,b)=>a.localeCompare(b, 'pt-BR', {sensitivity:'base'}));
+
+        const elFds = document.getElementById("lista-fds");
+        const elFispq = document.getElementById("lista-fispq");
+
+        fds.forEach(n => elFds.appendChild(cardLi(n)));
+        fispq.forEach(n => elFispq.appendChild(cardLi(n)));
+
+        statusEl.textContent = "";
+      } catch (e) {
+        statusEl.textContent = "Erro ao carregar lista. Verifique se USERNAME/REPO/BRANCH estão corretos.";
+        console.error(e);
+      }
     }
 
-    render(FDS, "lista-fds");
-    render(FISPQ, "lista-fispq");
-
-    // data atualização
-    document.getElementById("updated").textContent = new Date().toLocaleDateString("pt-BR");
-
-    // busca
     const search = document.getElementById("search");
-    const cards = [];
-    document.querySelectorAll(".grid").forEach(g => g.querySelectorAll(".card").forEach(c => cards.push(c)));
     search.addEventListener("input", () => {
       const q = search.value.toLowerCase().trim();
-      cards.forEach(card => {
-        const t = card.textContent.toLowerCase();
-        card.style.display = t.includes(q) ? "" : "none";
+      document.querySelectorAll(".card").forEach(card => {
+        card.style.display = card.textContent.toLowerCase().includes(q) ? "" : "none";
       });
     });
+
+    load();
   </script>
 </body>
 </html>
