@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Biblioteca de PDFs</title>
+  <title>Biblioteca de Fichas de Segurança</title>
+  <meta name="description" content="FDS e FISPQ online">
   <style>
     :root { --gap:1rem; --radius:16px; }
     *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.5}
@@ -26,8 +27,8 @@
 </head>
 <body>
   <header class="container">
-    <h1>📚 Biblioteca de PDFs</h1>
-    <p>Pesquise por nome do produto e clique para abrir o PDF.</p>
+    <h1>📚 Fichas de Dados de Segurança</h1>
+    <p>Pesquise e clique para abrir o PDF.</p>
     <input id="search" type="search" placeholder="Pesquisar… (ex.: WD-40, Molykote, Loctite)">
   </header>
 
@@ -47,18 +48,18 @@
   </footer>
 
   <script>
-    // Arquivos exatamente como você me passou:
+    // LISTAS — exatamente como seus arquivos estão nomeados na RAIZ do repositório
     const FDS = [
+      "FDS ALCOOL ISOPROPILICO.pdf",
       "FDS LC 150-Limpa-Contatos-Aerojet.pdf",
       "FDS LOCTITE 271.pdf",
       "FDS LOCTITTE-242.pdf",
-      "FDS MOLYKOTE 55.pdf",
-      "FDS ALCOOL ISOPROPILICO.pdf",
       "FDS MOLYKOTE 111.pdf",
+      "FDS MOLYKOTE 55.pdf",
       "FDS SILICONE AEROSOL.pdf",
       "FDS TUBOLIT.pdf",
-      "FDS Vaselina Liquida.pdf",
       "FDS VASELINA SOLIDA.pdf",
+      "FDS Vaselina Liquida.pdf",
       "FDS VEDA JUNTA.pdf",
       "FDS VEJA VIDREX.pdf",
       "FDS WD 40 AEROSOL.pdf",
@@ -76,35 +77,36 @@
       "FISPQLOCTITE 290.pdf"
     ];
 
-    // Remove duplicados mantendo a ordem
+    // util: remove duplicados mantendo a ordem
     const dedup = arr => [...new Map(arr.map(x => [x.toLowerCase(), x])).values()];
 
-    function criaCard(nomeArquivo) {
-      // monta link para /pdfs/ e codifica espaços/acentos
-      const href = "pdfs/" + encodeURIComponent(nomeArquivo);
-      // título legível (tira prefixo FDS/FISPQ e extensão)
-      const title = nomeArquivo.replace(/^FIS?PQ\s*/i, "").replace(/^FDS\s*/i, "").replace(/\.pdf$/i, "");
+    function criaCard(nomeArquivo, prefixo) {
+      // como os PDFs estão na RAIZ, não há prefixo de pasta; só codificamos a URL
+      const href = encodeURIComponent(nomeArquivo);
+      // título legível (remove prefixos e extensão)
+      let title = nomeArquivo.replace(/\.pdf$/i,"");
+      title = title.replace(/^FDS\s*/i,"").replace(/^FISPQ\s*/i,"");
       const li = document.createElement("li");
       li.className = "card";
       li.innerHTML = `<a href="${href}" target="_blank" rel="noopener">
-          <span class="title">${title}</span>
-          <span class="meta">PDF</span>
-        </a>`;
+        <span class="title">${title}</span>
+        <span class="meta">PDF</span>
+      </a>`;
       return li;
     }
 
     function render(lista, ulId) {
       const ul = document.getElementById(ulId);
-      lista.forEach(n => ul.appendChild(criaCard(n)));
+      dedup(lista).forEach(n => ul.appendChild(criaCard(n)));
     }
 
-    render(dedup(FDS), "lista-fds");
-    render(dedup(FISPQ), "lista-fispq");
+    render(FDS, "lista-fds");
+    render(FISPQ, "lista-fispq");
 
-    // Data de atualização
+    // data atualização
     document.getElementById("updated").textContent = new Date().toLocaleDateString("pt-BR");
 
-    // Busca
+    // busca
     const search = document.getElementById("search");
     const cards = [];
     document.querySelectorAll(".grid").forEach(g => g.querySelectorAll(".card").forEach(c => cards.push(c)));
